@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "img": "./books-images/image 20.png",
+    "title": "Learning React",
+    "author": "Alex Banks & Eve Porcello",
+    "price": 434
+  },
+  {
+    "id": 2,
+    "img": "./books-images/image 21.png",
+    "title": "The Road to React",
+    "author": "Robin Wieruch",
+    "price": 334
+  },
+  {
+    "id": 3,
+    "img": "./books-images/image 22.png",
+    "title": "The C Programming Language",
+    "author": "Brain W. Kernighan Dennis M. Ritchie",
+    "price": 342
+  },
+  {
+    "id": 4,
+    "img": "./books-images/image 23.png",
+    "title": "Effective TypeScript",
+    "author": "Dan Vanderkam",
+    "price": 132
+  },
+  {
+    "id": 5,
+    "img": "./books-images/image 25.png",
+    "title": "JavaScript Everywhere",
+    "author": "Adam D. Scottark Lutz",
+    "price": 234
+  },
+  {
+    "id": 6,
+    "img": "./books-images/image 29.png",
+    "title": "Python Crash Course",
+    "author": "Eric Matthes",
+    "price": 334
+  },
+  {
+    "id": 7,
+    "img": "./books-images/image 30.png",
+    "title": "Software Engineering at Google",
+    "author": "Titus Winter",
+    "price": 342
+  },
+  {
+    "id": 8,
+    "img": "./books-images/image 31.png",
+    "title": "Learn JavaScript Quickly",
+    "author": "Dan Vanderkam",
+    "price": 132
+  },
+  {
+    "id": 9,
+    "img": "./books-images/image-19.png",
+    "title": "Eloquent JavaScript",
+    "author": "Marijn Haverbeke",
+    "price": 134
+  }
+]

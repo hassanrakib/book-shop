@@ -1,0 +1,40 @@
+import React from "react";
+import searchIcon from "../../../icons/search.png";
+
+export default class Search extends React.Component {
+  state = { searchText: "" };
+
+  handleInputChange = (e) => {
+    this.setState({ searchText: e.target.value });
+  };
+
+  handleSearchSubmit = (e) => {
+    e.preventDefault();
+    console.log(this.state.searchText);
+  };
+  render() {
+    return (
+      <form
+        onSubmit={this.handleSearchSubmit}
+        className="flex items-center rounded bg-slate-100 pl-2 w-2/5 mx-auto my-20"
+      >
+        <img className="h-6 w-6" src={searchIcon} alt="search-icon" />
+        <input
+          className="w-full bg-transparent outline-none placeholder:text-slate-400 px-3"
+          type="search"
+          name=""
+          id=""
+          value={this.state.searchText}
+          onChange={this.handleInputChange}
+          placeholder="Search Book"
+        />
+        <button
+          className="rounded-r bg-blue-custom text-white px-9 py-4 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100"
+          type="submit"
+        >
+          Search
+        </button>
+      </form>
+    );
+  }
+}
