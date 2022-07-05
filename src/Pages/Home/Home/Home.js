@@ -11,6 +11,7 @@ export default class Home extends React.Component {
   }
 
   handleInputChange = (e) => {
+    e.preventDefault();
     this.setState({ searchText: e.target.value });
   };
 
