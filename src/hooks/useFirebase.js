@@ -5,6 +5,7 @@ import {
   signInWithRedirect,
   getRedirectResult,
   onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -28,7 +29,6 @@ const useFirebase = () => {
   };
 
   useEffect(() => {
-    //  get the oauth token of the google provider
     getRedirectResult(auth)
       .then((result) => {
         // The signed-in user info.
@@ -53,7 +53,7 @@ const useFirebase = () => {
   });
 
   // sign out from firebase authentication system
-  const signOut = () => {
+  const signOutTheUser = () => {
     signOut(auth)
       .then(() => {
         setUser({});
@@ -63,7 +63,12 @@ const useFirebase = () => {
       });
   };
 
-  return { googleSignIn, signOut, user, error };
+  return {
+    googleSignIn,
+    signOutTheUser,
+    user,
+    error,
+  };
 };
 
 export default useFirebase;

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 export default function LoginBtn() {
   //   get the user from the context
-  const { user } = useAuth();
+  const { user, signOutTheUser } = useAuth();
 
   // functionality to close the dropdown on avatar
   const [isDropdownActive, setIsDropdownActive] = useState(false);
@@ -53,7 +53,6 @@ export default function LoginBtn() {
               {[
                 { to: "#", text: "Profile" },
                 { to: "#", text: "Dashboard" },
-                { to: "#", text: "Logout" },
               ].map((link) => {
                 return (
                   <Link
@@ -65,6 +64,13 @@ export default function LoginBtn() {
                   </Link>
                 );
               })}
+              {/* logout button */}
+              <button
+                onClick={signOutTheUser}
+                className="block py-2 px-4 hover:bg-slate-50"
+              >
+                Logout
+              </button>
             </div>
           )}
         </div>

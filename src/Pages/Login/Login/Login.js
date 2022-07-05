@@ -1,6 +1,7 @@
 import AuthenticateUser from "../../Shared/AuthenticateUser/AuthenticateUser";
 
 export default function Login() {
+
   const formInputs = [
     { id: "email", label: "Email", type: "email" },
     { id: "password", label: "Password", type: "password" },
