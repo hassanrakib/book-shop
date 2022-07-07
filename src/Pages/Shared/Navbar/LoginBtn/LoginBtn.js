@@ -3,9 +3,13 @@ import avatar from "../../../../icons/avatar.png";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function LoginBtn() {
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   //   get the user from the context
   const { user, signOutTheUser } = useAuth();
 
@@ -75,11 +79,9 @@ export default function LoginBtn() {
           )}
         </div>
       ) : (
-        <Link to="/login">
-          <button className="rounded bg-blue-custom text-white px-5 py-2 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 shadow-md">
-            Login
-          </button>
-        </Link>
+        <button onClick={() => navigate('/login', {state: location.pathname})} className="rounded bg-blue-custom text-white px-5 py-2 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 shadow-md">
+          Login
+        </button>
       )}
     </li>
   );

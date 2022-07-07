@@ -20,6 +20,7 @@ const useFirebase = () => {
 
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // google sign in using redirect
   const googleProvider = new GoogleAuthProvider();
@@ -28,7 +29,8 @@ const useFirebase = () => {
     signInWithRedirect(auth, googleProvider);
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
+    setIsLoading(true);
     getRedirectResult(auth)
       .then((result) => {
         // The signed-in user info.
@@ -38,18 +40,23 @@ const useFirebase = () => {
       .catch((error) => {
         const errorMessage = error.message;
         setError(errorMessage);
-      });
-  }, []);
+      })
+      .finally(() => setIsLoading(false));
+  }, []); */
 
   // observer to get the currently signed in user
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribed = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
       } else {
         setUser({});
       }
+      setIsLoading(false);
     });
+
+    // stop the observer when any component that uses this unmounts
+    return () => unsubscribed;
   });
 
   // sign out from firebase authentication system
@@ -60,12 +67,15 @@ const useFirebase = () => {
       })
       .catch((error) => {
         setError(error.message);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return {
     googleSignIn,
     signOutTheUser,
+    setIsLoading,
+    isLoading,
     user,
     error,
   };
