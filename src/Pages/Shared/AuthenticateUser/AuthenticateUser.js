@@ -9,7 +9,7 @@ export default function AuthenticateUser({ formItems }) {
   const location = useLocation();
   const navigate = useNavigate();
   const redirect_uri = location.state ? location.state : "/";
-  const { user, isLoading, setIsLoading } = useAuth();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
     if (user.email) {
@@ -20,7 +20,7 @@ export default function AuthenticateUser({ formItems }) {
   const { title, formInputs, btnText, textsAfterBtn, handleSubmit } = formItems;
   return (
     <>
-      {isLoading ? (
+      {isLoading || user.email ? (
         <Loading />
       ) : (
         <div className="max-w-md mx-auto my-4 space-y-1">
