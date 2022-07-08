@@ -29,20 +29,21 @@ const useFirebase = () => {
     signInWithRedirect(auth, googleProvider);
   };
 
-  /* useEffect(() => {
-    setIsLoading(true);
-    getRedirectResult(auth)
+  // get sign in info after redirection from google
+  useEffect(() => {
+    const unsubscribed = getRedirectResult(auth)
       .then((result) => {
         // The signed-in user info.
-        const user = result.user;
-        setUser(user);
+        const newUser = result.user;
+        setUser(newUser);
       })
-      .catch((error) => {
-        const errorMessage = error.message;
-        setError(errorMessage);
+      .catch((err) => {
+        console.log("Error happened");
       })
       .finally(() => setIsLoading(false));
-  }, []); */
+
+    return () => unsubscribed;
+  }, []);
 
   // observer to get the currently signed in user
   useEffect(() => {
@@ -75,6 +76,9 @@ const useFirebase = () => {
     googleSignIn,
     signOutTheUser,
     setIsLoading,
+    setError,
+    setUser,
+    auth,
     isLoading,
     user,
     error,

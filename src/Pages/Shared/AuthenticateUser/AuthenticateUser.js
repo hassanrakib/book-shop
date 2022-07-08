@@ -18,6 +18,7 @@ export default function AuthenticateUser({ formItems }) {
   }, [user]);
 
   const { title, formInputs, btnText, textsAfterBtn, handleSubmit } = formItems;
+
   return (
     <>
       {isLoading || user.email ? (

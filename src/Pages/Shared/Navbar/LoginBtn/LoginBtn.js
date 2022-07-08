@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Loading from "../../Loading/Loading";
 
 export default function LoginBtn() {
-
   const location = useLocation();
   const navigate = useNavigate();
 
   //   get the user from the context
-  const { user, signOutTheUser } = useAuth();
+  const { user, isLoading, signOutTheUser } = useAuth();
 
   // functionality to close the dropdown on avatar
   const [isDropdownActive, setIsDropdownActive] = useState(false);
@@ -78,8 +78,15 @@ export default function LoginBtn() {
             </div>
           )}
         </div>
+      ) : isLoading ? (
+        <div className="h-10 w-10">
+          <Loading isLarge={false} />
+        </div>
       ) : (
-        <button onClick={() => navigate('/login', {state: location.pathname})} className="rounded bg-blue-custom text-white px-5 py-2 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 shadow-md">
+        <button
+          onClick={() => navigate("/login", { state: location.pathname })}
+          className="rounded bg-blue-custom text-white px-5 py-2 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 shadow-md"
+        >
           Login
         </button>
       )}
