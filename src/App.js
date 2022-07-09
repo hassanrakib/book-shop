@@ -9,7 +9,6 @@ import CreateAccount from "./Pages/CreateAccount/CreateAccount/CreateAccount";
 
 function App() {
   return (
-    <div className="container">
       <AuthProvider>
         <Routes>
           <Route element={<MainLayout />}>
@@ -20,7 +19,6 @@ function App() {
           </Route>
         </Routes>
       </AuthProvider>
-    </div>
   );
 }
 

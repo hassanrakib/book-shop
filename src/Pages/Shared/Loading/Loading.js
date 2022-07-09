@@ -1,9 +1,10 @@
 import loadingIcon from "../../../icons/loading.png";
-const Loading = ({ isLarge = true }) => {
+const Loading = ({ isLarge = true, ...props }) => {
+  const { height, width } = props;
   return (
     <div
       className={`${
-        isLarge ? "h-screen" : ""
+        isLarge ? "h-screen" : `${height && height} ${width && width}`
       } flex items-center justify-center`}
     >
       <img

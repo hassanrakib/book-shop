@@ -42,12 +42,12 @@ export default function LoginBtn() {
         // dropdown with avatar (container)
         <div ref={dropdown} className="relative">
           <button
-            className="p-px rounded-full bg-blue-200 outline-none"
+            className="p-0.5 rounded-full bg-slate-300 outline-none"
             onClick={() => setIsDropdownActive((oldState) => !oldState)}
           >
             <img
               src={user.photoURL ? user.photoURL : avatar}
-              className="h-10 w-auto rounded-full hover:scale-95 transition-transform"
+              className="h-9 w-9 rounded-full hover:scale-95 transition-transform"
               alt="avatar"
             />
           </button>
@@ -61,7 +61,7 @@ export default function LoginBtn() {
                 return (
                   <Link
                     key={Math.random().toString()}
-                    className="block py-2 px-4 hover:bg-slate-50"
+                    className="block first:rounded-t-md py-2 px-4 hover:bg-slate-50"
                     to={link.to}
                   >
                     {link.text}
@@ -71,7 +71,7 @@ export default function LoginBtn() {
               {/* logout button */}
               <button
                 onClick={signOutTheUser}
-                className="block py-2 px-4 hover:bg-slate-50"
+                className="block w-full text-left py-2 px-4 hover:bg-slate-50"
               >
                 Logout
               </button>
@@ -79,13 +79,11 @@ export default function LoginBtn() {
           )}
         </div>
       ) : isLoading ? (
-        <div className="h-10 w-10">
-          <Loading isLarge={false} />
-        </div>
+        <Loading isLarge={false} height="h-10" width="w-10" />
       ) : (
         <button
           onClick={() => navigate("/login", { state: location.pathname })}
-          className="rounded bg-blue-custom text-white px-5 py-2 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 shadow-md"
+          className="rounded bg-slate-100 text-blue-custom px-5 py-2 hover:bg-white focus:outline-none ring-1 ring-blue-custom shadow"
         >
           Login
         </button>

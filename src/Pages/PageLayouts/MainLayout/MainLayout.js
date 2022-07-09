@@ -5,7 +5,7 @@ export default function MainLayout() {
   return (
     <div>
       <Navbar />
-      <div>
+      <div className="container">
         <Outlet />
       </div>
     </div>

@@ -15,11 +15,15 @@ export default function Navbar() {
   const pathname = useLocation().pathname;
 
   return (
-    <nav className="flex justify-between items-center py-4">
+    <nav className="flex justify-between items-center p-4 shadow-sm">
       {/* book shop logo */}
       <div>
         <Link to="./">
-          <img className="h-9 w-auto" src={logo} alt="book-shop-logo" />
+          <img
+            className="drop-shadow-sm h-9 w-auto"
+            src={logo}
+            alt="book-shop-logo"
+          />
         </Link>
       </div>
       {/* book shop top nav links */}
@@ -27,7 +31,7 @@ export default function Navbar() {
         {pathname === "/login" || pathname === "/create-account" ? null : (
           <ul className="flex justify-between items-center">
             {navItems.map((navItem) => (
-              <li key={navItem.id.toString()}>
+              <li className="text-slate-600" key={navItem.id.toString()}>
                 <Link to={navItem.link}>{navItem.text}</Link>
               </li>
             ))}

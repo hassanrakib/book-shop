@@ -7,8 +7,13 @@ export default class Home extends React.Component {
     super(props);
     this.state = {
       searchText: "",
+      searchLoading: false,
     };
   }
+
+  changeSearchLoading = (boolean) => {
+    this.setState({ searchLoading: boolean });
+  };
 
   handleInputChange = (e) => {
     e.preventDefault();
@@ -21,8 +26,12 @@ export default class Home extends React.Component {
         <Search
           handleInputChange={this.handleInputChange}
           searchText={this.state.searchText}
+          searchLoading={this.state.searchLoading}
         />
-        <Books searchText={this.state.searchText} />
+        <Books
+          changeSearchLoading={this.changeSearchLoading}
+          searchText={this.state.searchText}
+        />
       </>
     );
   }
