@@ -21,6 +21,9 @@ const useFirebase = () => {
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  // callObserver will be true after the user is saved to the db
+  // then the observer will be called as callObserver is a dependency
+  const [callObserver, setCallObserver] = useState(false);
 
   // google sign in using redirect
   const googleProvider = new GoogleAuthProvider();
@@ -45,33 +48,28 @@ const useFirebase = () => {
           cart: [],
         };
 
-        // if a user already exists in db, don't save him
+        // if user not found in db, save user to db
         fetch(`http://localhost:5000/users/${newUser.uid}`)
           .then((res) => res.json())
           .then((userFromDB) => {
-            // if found set the user variable to user from db
-            if (userFromDB.uid == newUser.uid) {
-              setUser(userFromDB);
+            if (userFromDB === null) {
+              fetch("http://localhost:5000/users", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newUser),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  setCallObserver(data.acknowledged);
+                });
             }
-          })
-          .catch(() => {
-            // if not found save new user to database and to user variable for current use
-            setUser(newUser);
-            fetch("http://localhost:5000/users", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newUser),
-            })
-              .then((res) => res.json())
-              .then((data) => console.log(data.acknowledged));
           });
       })
       .catch((err) => {
         // No need
-      })
-      .finally(() => setIsLoading(false));
+      });
 
     return () => unsubscribed;
   }, [auth]);
@@ -84,20 +82,20 @@ const useFirebase = () => {
         fetch(`http://localhost:5000/users/${user.uid}`)
           .then((res) => res.json())
           .then((userFromDB) => {
-            if (userFromDB.uid == user.uid) {
+            if (userFromDB !== null) {
               setUser(userFromDB);
-              console.log(userFromDB);
+              setIsLoading(false);
             }
-          }).finally(() => setIsLoading(false));
+          });
       } else {
         setUser({});
+        setIsLoading(false);
       }
-      // setIsLoading(false);
     });
 
     // stop the observer when any component that uses this unmounts
     return () => unsubscribed;
-  });
+  }, [auth, callObserver]);
 
   // sign out from firebase authentication system
   const signOutTheUser = () => {
