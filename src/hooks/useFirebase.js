@@ -33,17 +33,35 @@ const useFirebase = () => {
   useEffect(() => {
     const unsubscribed = getRedirectResult(auth)
       .then((result) => {
-        // The signed-in user info.
-        const newUser = result.user;
+        const userFromFirebase = result.user;
+        // save new user to db
+        const newUser = {
+          uid: userFromFirebase.uid,
+          displayName: userFromFirebase.displayName,
+          email: userFromFirebase.email,
+          photoURL: userFromFirebase.photoURL,
+          cart: [],
+        };
+
+        // set the user
         setUser(newUser);
+
+        // save new user to database
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser)
+        });
       })
       .catch((err) => {
-        console.log("Error happened");
+        // No need
       })
       .finally(() => setIsLoading(false));
 
     return () => unsubscribed;
-  }, []);
+  }, [auth]);
 
   // observer to get the currently signed in user
   useEffect(() => {
