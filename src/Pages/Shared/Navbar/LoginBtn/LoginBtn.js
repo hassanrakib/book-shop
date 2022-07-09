@@ -46,8 +46,8 @@ export default function LoginBtn() {
             onClick={() => setIsDropdownActive((oldState) => !oldState)}
           >
             <img
-              src={avatar}
-              className="h-10 w-auto hover:scale-95 transition-transform"
+              src={user.photoURL ? user.photoURL : avatar}
+              className="h-10 w-auto rounded-full hover:scale-95 transition-transform"
               alt="avatar"
             />
           </button>
