@@ -21,9 +21,58 @@ const useFirebase = () => {
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  // callObserver will be true after the user is saved to the db
-  // then the observer will be called as callObserver is a dependency
-  const [callObserver, setCallObserver] = useState(false);
+
+  /* 
+      :: functions to work on managing users in db ::
+  */
+
+  // save user to db
+  const saveUserToDB = (user) => {
+    console.log("save user to db");
+    const newUser = {
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      cart: [],
+    };
+
+    fetch(`http://localhost:5000/users/${newUser.uid}`)
+      .then((res) => res.json())
+      .then((userFromDB) => {
+        if (!userFromDB) {
+          fetch("http://localhost:5000/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newUser),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.acknowledged) {
+                // for current use
+                setUser(newUser);
+              } else {
+                setError("User creation failed!");
+              }
+            }).finally(() => setIsLoading(false));
+        }
+      });
+  };
+
+  //   get user from db
+  const getUserFromDB = (user) => {
+    console.log("inside the get user from db");
+    fetch(`http://localhost:5000/users/${user.uid}`)
+      .then((res) => res.json())
+      .then((userFromDB) => {
+        if (userFromDB) {
+          setUser(userFromDB);
+          setIsLoading(false);
+        }
+      });
+  };
 
   // google sign in using redirect
   const googleProvider = new GoogleAuthProvider();
@@ -39,33 +88,8 @@ const useFirebase = () => {
         // get the user from firebase
         const userFromFirebase = result.user;
 
-        // save new user to db & user variable
-        const newUser = {
-          uid: userFromFirebase.uid,
-          displayName: userFromFirebase.displayName,
-          email: userFromFirebase.email,
-          photoURL: userFromFirebase.photoURL,
-          cart: [],
-        };
-
-        // if user not found in db, save user to db
-        fetch(`http://localhost:5000/users/${newUser.uid}`)
-          .then((res) => res.json())
-          .then((userFromDB) => {
-            if (userFromDB === null) {
-              fetch("http://localhost:5000/users", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newUser),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  setCallObserver(data.acknowledged);
-                });
-            }
-          });
+        // save user to db if doesn't exist in db
+        saveUserToDB(userFromFirebase);
       })
       .catch((err) => {
         // No need
@@ -76,17 +100,10 @@ const useFirebase = () => {
 
   // observer to get the currently signed in user
   useEffect(() => {
-    const unsubscribed = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // get the user from DB and set to user variable
-        fetch(`http://localhost:5000/users/${user.uid}`)
-          .then((res) => res.json())
-          .then((userFromDB) => {
-            if (userFromDB !== null) {
-              setUser(userFromDB);
-              setIsLoading(false);
-            }
-          });
+    const unsubscribed = onAuthStateChanged(auth, (userFromFirebase) => {
+      if (userFromFirebase) {
+        // get the user from DB, if not found in db save user to db and then get user
+        getUserFromDB(userFromFirebase);
       } else {
         setUser({});
         setIsLoading(false);
@@ -95,7 +112,7 @@ const useFirebase = () => {
 
     // stop the observer when any component that uses this unmounts
     return () => unsubscribed;
-  }, [auth, callObserver]);
+  }, [auth]);
 
   // sign out from firebase authentication system
   const signOutTheUser = () => {
@@ -115,6 +132,8 @@ const useFirebase = () => {
     setIsLoading,
     setError,
     setUser,
+    saveUserToDB,
+    getUserFromDB,
     auth,
     isLoading,
     user,
