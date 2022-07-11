@@ -1,4 +1,40 @@
-export default function Book({book}) {
+import useAuth from "../../../hooks/useAuth";
+
+export default function Book({ book }) {
+  const { user } = useAuth();
+  const handleBuyNow = () => {
+    if (user) {
+      // get the previous cart of the user
+      const prevCart = [...user.cart];
+
+      // check whether the book that user wants to buy already exists in cart
+      const bookAlreadyInCart = prevCart.find((bookInCart) => {
+        return bookInCart.bookId == book.id;
+      });
+
+      // if the book exists, then just update the book quantity. else push a new book to the cart
+      if (bookAlreadyInCart) {
+        bookAlreadyInCart.bookQuantity += 1;
+      } else {
+        prevCart.push({ bookId: book.id, bookQuantity: 1 });
+      }
+
+      // finally send the updated cart to the backend
+      fetch(`http://localhost:5000/users/${user.uid}/cart`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          updatedCart: prevCart,
+        }),
+      })
+        .then((res) => res.json())
+        .then((result) => console.log(result.acknowledged));
+    } else {
+      // will handle with localStorage
+    }
+  };
   return (
     <div className="p-3 shadow-sm rounded-xl">
       <div className="bg-neutral-100 py-7 px-11 rounded-2xl">
@@ -10,7 +46,12 @@ export default function Book({book}) {
       </div>
       <div className="flex justify-between items-center mt-4">
         <p className="font-black text-4xl text-blue-custom">${book.price}</p>
-        <button className="rounded-xl bg-blue-custom text-white px-8 py-3 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100">Buy Now</button>
+        <button
+          onClick={handleBuyNow}
+          className="rounded-xl bg-blue-custom text-white px-8 py-3 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100"
+        >
+          Buy Now
+        </button>
       </div>
     </div>
   );

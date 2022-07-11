@@ -20,12 +20,14 @@ export default class Books extends React.Component {
     const { searchText, changeSearchLoading } = this.props;
     const { books } = this.state;
     if (prevProps.searchText !== searchText) {
+      // starts loading
       changeSearchLoading(true);
       setTimeout(() => {
         const filteredBooks = books.filter((book) => {
           return book.title.toLowerCase().includes(searchText.toLowerCase());
         });
         this.setState({ displayBooks: filteredBooks });
+        // stops loading
         changeSearchLoading(false);
       }, 1000);
     }
