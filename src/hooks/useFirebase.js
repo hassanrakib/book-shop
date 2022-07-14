@@ -130,7 +130,6 @@ const useFirebase = () => {
     setIsLoading,
     setError,
     setUser,
-    auth,
     isLoading,
     user,
     error,

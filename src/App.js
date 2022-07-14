@@ -6,10 +6,12 @@ import Checkout from "./Pages/Checkout/Checkout/Checkout";
 import MainLayout from "./Pages/PageLayouts/MainLayout/MainLayout";
 import Login from "./Pages/Login/Login/Login";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount/CreateAccount";
+import CartProvider from "./contexts/CartProvider";
 
 function App() {
   return (
     <AuthProvider>
+      <CartProvider>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
@@ -18,6 +20,7 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Route>
         </Routes>
+      </CartProvider>
     </AuthProvider>
   );
 }
