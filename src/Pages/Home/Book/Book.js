@@ -5,7 +5,7 @@ export default function Book({ book }) {
   const handleBuyNow = () => {
     if (user) {
       // get the previous cart of the user
-      const prevCart = [...user.cart];
+      const prevCart = user.cart;
 
       // check whether the book that user wants to buy already exists in cart
       const bookAlreadyInCart = prevCart.find((bookInCart) => {
@@ -30,7 +30,9 @@ export default function Book({ book }) {
         }),
       })
         .then((res) => res.json())
-        .then((result) => console.log(result.acknowledged));
+        .then((result) => {
+          if (result.acknowledged) console.log(user.cart);
+        });
     } else {
       // will handle with localStorage
     }

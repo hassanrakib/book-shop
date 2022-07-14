@@ -28,7 +28,6 @@ const useFirebase = () => {
 
   // save user to db
   const saveUserToDB = (user) => {
-    console.log("save user to db");
     const newUser = {
       uid: user.uid,
       displayName: user.displayName,
@@ -63,7 +62,6 @@ const useFirebase = () => {
 
   //   get user from db
   const getUserFromDB = (user) => {
-    console.log("inside the get user from db");
     fetch(`http://localhost:5000/users/${user.uid}`)
       .then((res) => res.json())
       .then((userFromDB) => {
@@ -102,7 +100,7 @@ const useFirebase = () => {
   useEffect(() => {
     const unsubscribed = onAuthStateChanged(auth, (userFromFirebase) => {
       if (userFromFirebase) {
-        // get the user from DB, if not found in db save user to db and then get user
+        // get the user from DB
         getUserFromDB(userFromFirebase);
       } else {
         setUser({});
@@ -132,8 +130,6 @@ const useFirebase = () => {
     setIsLoading,
     setError,
     setUser,
-    saveUserToDB,
-    getUserFromDB,
     auth,
     isLoading,
     user,

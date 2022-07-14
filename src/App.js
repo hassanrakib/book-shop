@@ -9,7 +9,7 @@ import CreateAccount from "./Pages/CreateAccount/CreateAccount/CreateAccount";
 
 function App() {
   return (
-      <AuthProvider>
+    <AuthProvider>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
@@ -18,7 +18,7 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Route>
         </Routes>
-      </AuthProvider>
+    </AuthProvider>
   );
 }
 

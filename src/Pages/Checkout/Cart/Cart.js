@@ -1,26 +1,48 @@
 import React from "react";
 
-// fake data of orders
-const orders = [
-  {
-    description: "Stuff You Should Know",
-    quantity: 1,
-    pricePerBook: 234,
-  },
-  {
-    description: "Eloquent JavaScript",
-    quantity: 3,
-    pricePerBook: 154,
-  },
-];
-
 export default class Cart extends React.Component {
+  state = {
+    displayCart: [],
+    changeDisplayCart: (currentCart) => {
+      Promise.all(
+        currentCart.map((book) =>
+          fetch(`http://localhost:5000/books/${book.bookId}`)
+            .then((res) => res.json())
+            .then((displayCartBook) => ({
+              quantity: book.bookQuantity,
+              ...displayCartBook,
+            }))
+        )
+      ).then((displayCart) => this.setState({ displayCart }));
+    },
+  };
+
+  // componentDidMount lifecycle method is called everytime the component mounts
+  componentDidMount() {
+    const currentCart = this.props.user.cart;
+    // if someone reloads the page, currentCart will be undefined as there will be an empty user object
+    // but if someone navigates through Link, currentCart will not be undefined
+    if (currentCart) {
+      this.state.changeDisplayCart(currentCart);
+    }
+  }
+
+  // componentDidUpdate is called after props and states change. And surely after all other methods calling done. Point to be noted that it is not called after the first render.
+  componentDidUpdate({ user }) {
+    const prevCart = user.cart;
+    const currentCart = this.props.user.cart;
+    if (prevCart?.length !== currentCart?.length) {
+      this.state.changeDisplayCart(currentCart);
+    }
+  }
+
   render() {
+    const { displayCart } = this.state;
     // calculate the total price
-    const initialValue = 0;
-    const total = orders.reduce((sum, current) => {
-      return sum + current.pricePerBook * current.quantity;
-    }, initialValue);
+    const initialTotal = 0;
+    const total = displayCart.reduce((sum, displayCartBook) => {
+      return sum + displayCartBook.price * displayCartBook.quantity;
+    }, initialTotal);
     return (
       <div className="mt-8 space-y-4">
         <h1 className="text-3xl">Checkout</h1>
@@ -39,17 +61,19 @@ export default class Cart extends React.Component {
               </tr>
             </thead>
             <tbody className="font-medium">
-              {orders.map((order) => (
+              {displayCart.map((displayCartBook) => (
                 <tr key={Math.random().toString()}>
-                  <td className="px-1 py-3">{order.description}</td>
-                  <td className="block px-4 py-3">{order.quantity}</td>
+                  <td className="px-1 py-3">{displayCartBook.title}</td>
+                  <td className="block px-4 py-3">
+                    {displayCartBook.quantity}
+                  </td>
                   <td className="px-1 py-3">
-                    ${order.pricePerBook * order.quantity}
+                    ${displayCartBook.price * displayCartBook.quantity}
                   </td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="border-t font-bold">
+            <tfoot className="border-t font-bold bg-slate-100">
               <tr>
                 <td className="px-1 py-4" colSpan={2}>
                   Total
@@ -59,7 +83,9 @@ export default class Cart extends React.Component {
             </tfoot>
           </table>
         </div>
-        <button className="rounded-xl bg-blue-custom text-white px-5 py-4 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 ml-auto block">Checkout</button>
+        <button className="rounded-xl bg-blue-custom text-white px-5 py-4 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100 ml-auto block">
+          Checkout
+        </button>
       </div>
     );
   }

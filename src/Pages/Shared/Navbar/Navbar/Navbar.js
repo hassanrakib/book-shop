@@ -5,10 +5,10 @@ import LoginBtn from "../LoginBtn/LoginBtn";
 
 export default function Navbar() {
   const navItems = [
-    { id: 1, text: "Home", link: "/home" },
+    { id: 1, text: "Home", link: "/" },
     { id: 2, text: "Orders", link: "/orders" },
     { id: 3, text: "Admin", link: "/admin" },
-    { id: 4, text: "Deals", link: "/deals" },
+    { id: 4, text: "Checkout", link: "/checkout" },
   ];
 
   // location
