@@ -1,22 +1,23 @@
 import useAuth from "../../../hooks/useAuth";
 
 export default function Book({ book }) {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const handleBuyNow = () => {
-    if (user) {
+    if (user.email) {
       // get the previous cart of the user
-      const prevCart = user.cart;
+      const userCopy = {...user}; 
+      const prevCart = [...userCopy.cart];
 
       // check whether the book that user wants to buy already exists in cart
       const bookAlreadyInCart = prevCart.find((bookInCart) => {
-        return bookInCart.bookId == book.id;
+        return bookInCart.id == book.id;
       });
 
       // if the book exists, then just update the book quantity. else push a new book to the cart
       if (bookAlreadyInCart) {
-        bookAlreadyInCart.bookQuantity += 1;
+        bookAlreadyInCart.quantity += 1;
       } else {
-        prevCart.push({ bookId: book.id, bookQuantity: 1 });
+        prevCart.push({ id: book.id, quantity: 1 });
       }
 
       // finally send the updated cart to the backend
@@ -31,9 +32,13 @@ export default function Book({ book }) {
       })
         .then((res) => res.json())
         .then((result) => {
-          if (result.acknowledged) console.log(user.cart);
+          if (result.acknowledged) {
+            userCopy.cart = prevCart;
+            setUser(userCopy);
+          }
         });
     } else {
+      console.log('wait...');
       // will handle with localStorage
     }
   };
