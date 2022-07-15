@@ -36,7 +36,8 @@ export default class CartProvider extends React.Component {
   totalPriceOrQuantity = (cart, isPrice = true) => {
     const initialTotal = 0;
 
-    // checking before the operation
+    // just logged out user cart will be undefined
+    // so instead of undefined we are returning 0 to match the displayCart quantity after setState
     if (cart === undefined || cart.length === 0) {
       return initialTotal;
     }
@@ -70,7 +71,6 @@ export default class CartProvider extends React.Component {
       !this.state.isLoading &&
       totalProductInCart !== totalProductInDisplayCart
     ) {
-      console.log('call checking');
       this.changeDisplayCart(this.context.user.cart);
     }
   }

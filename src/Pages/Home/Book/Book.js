@@ -1,11 +1,27 @@
+import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
+import Loading from "../../Shared/Loading/Loading";
 
 export default function Book({ book }) {
   const { user, setUser } = useAuth();
+  const [isBuying, setIsBuying] = useState(false);
+  const [isBought, setIsBought] = useState(false);
+
+  // confirm someone after buying done through isBought state
+  const showBought = function () {
+    setIsBought(true);
+    setTimeout(() => {
+      setIsBought(false);
+    }, 2000);
+  };
+
   const handleBuyNow = () => {
     if (user.email) {
+      // buying operations starts
+      setIsBuying(true);
+
       // get the previous cart of the user
-      const userCopy = {...user}; 
+      const userCopy = { ...user };
       const prevCart = [...userCopy.cart];
 
       // check whether the book that user wants to buy already exists in cart
@@ -35,10 +51,16 @@ export default function Book({ book }) {
           if (result.acknowledged) {
             userCopy.cart = prevCart;
             setUser(userCopy);
+
+            // buying operations ends
+            setIsBuying(false);
+
+            // showBought holds isBought to true for one second
+            showBought();
           }
         });
     } else {
-      console.log('wait...');
+      console.log("wait...");
       // will handle with localStorage
     }
   };
@@ -55,9 +77,19 @@ export default function Book({ book }) {
         <p className="font-black text-4xl text-blue-custom">${book.price}</p>
         <button
           onClick={handleBuyNow}
-          className="rounded-xl bg-blue-custom text-white px-8 py-3 hover:bg-violet-500 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-100"
+          className={`${
+            isBuying
+              ? "cursor-not-allowed bg-white"
+              : isBought && "cursor-not-allowed ring-red-900"
+          } w-32 block rounded bg-slate-100 text-blue-custom text-center py-3 hover:bg-white focus:outline-none ring-1 ring-blue-custom shadow`}
         >
-          Buy Now
+          {isBuying ? (
+            <Loading className="h-8 text-center" />
+          ) : isBought ? (
+            <span className="text-red-900">Bought</span>
+          ) : (
+            "Buy Now"
+          )}
         </button>
       </div>
     </div>

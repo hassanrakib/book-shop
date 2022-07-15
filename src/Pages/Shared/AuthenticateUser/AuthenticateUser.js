@@ -22,7 +22,9 @@ export default function AuthenticateUser({ formItems }) {
   return (
     <>
       {isLoading || user.email ? (
-        <Loading />
+        <div className="h-screen flex items-center justify-center">
+          <Loading className="h-24 w-24" />
+        </div>
       ) : (
         <div className="max-w-md mx-auto my-4 space-y-1">
           {/* Create account form */}

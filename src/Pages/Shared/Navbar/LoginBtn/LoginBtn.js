@@ -78,15 +78,19 @@ export default function LoginBtn() {
             </div>
           )}
         </div>
-      ) : isLoading ? (
-        <Loading isLarge={false} height="h-10" width="w-10" />
       ) : (
-        <button
-          onClick={() => navigate("/login", { state: location.pathname })}
-          className="rounded bg-slate-100 text-blue-custom px-5 py-2 hover:bg-white focus:outline-none ring-1 ring-blue-custom shadow"
-        >
-          Login
-        </button>
+        <div>
+          {isLoading ? (
+            <Loading className="w-10 h-auto" />
+          ) : (
+            <button
+              onClick={() => navigate("/login", { state: location.pathname })}
+              className="rounded bg-slate-100 text-blue-custom px-5 py-2 hover:bg-white focus:outline-none ring-1 ring-blue-custom shadow"
+            >
+              Login
+            </button>
+          )}
+        </div>
       )}
     </li>
   );
