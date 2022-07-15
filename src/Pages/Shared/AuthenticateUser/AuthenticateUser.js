@@ -67,7 +67,7 @@ export default function AuthenticateUser({ formItems }) {
             </p>
           </form>
           {/* sign in using google and facebook */}
-          <LoginWithAuthProviders />
+          <LoginWithAuthProviders redirect_uri={redirect_uri} />
         </div>
       )}
     </>

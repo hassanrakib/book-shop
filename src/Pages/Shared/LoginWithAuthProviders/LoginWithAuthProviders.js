@@ -2,7 +2,7 @@ import useAuth from "../../../hooks/useAuth";
 import facebookLogo from "../../../icons/facebook.png";
 import googleLogo from "../../../icons/google.png";
 
-export default function LoginWithAuthProviders() {
+export default function LoginWithAuthProviders({ redirect_uri }) {
   const { googleSignIn } = useAuth();
 
   // auth providers
@@ -28,7 +28,7 @@ export default function LoginWithAuthProviders() {
           <button
             key={authProvider.id}
             className="flex items-center border border-slate-300 rounded-full p-2 w-full"
-            onClick={authProvider.handler}
+            onClick={() => authProvider.handler(redirect_uri)}
           >
             <img className="h-9" src={authProvider.img} alt="auth-logo" />
             <p className="flex-1">{authProvider.text}</p>

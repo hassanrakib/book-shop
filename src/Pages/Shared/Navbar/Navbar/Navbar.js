@@ -44,7 +44,7 @@ export default function Navbar() {
               <NavLink to="/checkout" className="block relative p-1">
                 <img src={cartIcon} className="h-9 w-9" alt="cart-icon" />
                 {/* show the total product price on top of the cart icon*/}
-                <div className="absolute bg-blue-custom text-white text-sm bottom-2/4 left-2/4 rounded-full p-1">
+                <div className="absolute bg-blue-custom text-sm bottom-2/4 left-2/4 rounded-full p-1 text-slate-100">
                   ${total}
                 </div>
               </NavLink>

@@ -7,12 +7,20 @@ export default function Book({ book }) {
   const [isBuying, setIsBuying] = useState(false);
   const [isBought, setIsBought] = useState(false);
 
+  
+  // set isBuying to false
+  const setIsBuyingToFalse = function () {
+    setTimeout(() => {
+      setIsBuying(false);
+    }, 2000);
+  };
+
   // confirm someone after buying done through isBought state
   const showBought = function () {
     setIsBought(true);
     setTimeout(() => {
       setIsBought(false);
-    }, 2000);
+    }, 4000);
   };
 
   const handleBuyNow = () => {
@@ -53,9 +61,9 @@ export default function Book({ book }) {
             setUser(userCopy);
 
             // buying operations ends
-            setIsBuying(false);
+            setIsBuyingToFalse();
 
-            // showBought holds isBought to true for one second
+            // showBought holds isBought to true for two seconds
             showBought();
           }
         });
@@ -79,14 +87,14 @@ export default function Book({ book }) {
           onClick={handleBuyNow}
           className={`${
             isBuying
-              ? "cursor-not-allowed bg-white"
-              : isBought && "cursor-not-allowed ring-red-900"
+              ? "cursor-not-allowed"
+              : isBought && "cursor-not-allowed ring-green-900"
           } w-32 block rounded bg-slate-100 text-blue-custom text-center py-3 hover:bg-white focus:outline-none ring-1 ring-blue-custom shadow`}
         >
           {isBuying ? (
-            <Loading className="h-8 text-center" />
+            <Loading className="h-6 mx-auto" />
           ) : isBought ? (
-            <span className="text-red-900">Bought</span>
+            <span className="text-green-900">Bought</span>
           ) : (
             "Buy Now"
           )}

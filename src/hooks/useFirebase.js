@@ -7,6 +7,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import initializeFirebaseApp from "../Firebase/firebase.init";
@@ -16,11 +17,14 @@ After we initialize firebase, we can use firebase services. */
 const app = initializeFirebaseApp();
 
 const useFirebase = () => {
+  const navigate = useNavigate();
+
   const auth = getAuth(app);
 
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [redirectURI, setRedirectURI] = useState("");
 
   /* 
       :: functions to work on managing users in db ::
@@ -50,12 +54,15 @@ const useFirebase = () => {
             .then((res) => res.json())
             .then((data) => {
               if (data.acknowledged) {
+                navigate(redirectURI, { replace: true });
+                
                 // for current use
                 setUser(newUser);
               } else {
                 setError("User creation failed!");
               }
-            }).finally(() => setIsLoading(false));
+            })
+            .finally(() => setIsLoading(false));
         }
       });
   };
@@ -74,7 +81,9 @@ const useFirebase = () => {
 
   // google sign in using redirect
   const googleProvider = new GoogleAuthProvider();
-  const googleSignIn = () => {
+  const googleSignIn = (redirect_uri) => {
+    setRedirectURI(redirect_uri);
+
     // redirect the user to sign in with google
     signInWithRedirect(auth, googleProvider);
   };
