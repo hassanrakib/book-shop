@@ -7,7 +7,7 @@ export default class CartProvider extends React.Component {
 
   // changeDisplayCart gets the cart from context that contains book objects with less properties and update displayCart state with book objects with more properties
   changeDisplayCart = (currentCart) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     Promise.all(
       currentCart.map((book) =>
         fetch(`http://localhost:5000/books/${book.id}`)
@@ -18,14 +18,15 @@ export default class CartProvider extends React.Component {
           }))
       )
     )
-      .then((displayCart) => this.setState({ displayCart }))
-      .then(() => {
-        const totalPrice = this.totalPriceOrQuantity(this.state.displayCart);
+      .then((displayCart) => {
+        this.setState({ displayCart });
+        const totalPrice = this.totalPriceOrQuantity(displayCart);
         this.setState({ total: totalPrice });
-      }).finally(() => this.setState({isLoading: false}));
+      })
+      .finally(() => this.setState({ isLoading: false }));
   };
 
-  // calculate the total price or quantity based on the value of isPrice
+  // calculate the total product price or quantity based on the value of isPrice
   totalPriceOrQuantity = (cart, isPrice = true) => {
     const initialTotal = 0;
     const total = cart?.reduce((sum, cartBook) => {
@@ -53,7 +54,10 @@ export default class CartProvider extends React.Component {
       false
     );
     // isLoading is letting the fetch to be done and update displayCart
-    if (!this.state.isLoading && totalProductInCart !== totalProductInDisplayCart) {
+    if (
+      !this.state.isLoading &&
+      totalProductInCart !== totalProductInDisplayCart
+    ) {
       this.changeDisplayCart(this.context.user.cart);
     }
   }
