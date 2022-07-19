@@ -19,8 +19,10 @@ export default function RequireAuth({ children }) {
   // if user not signed in, send the user to the login page by preserving the location where the user wanted to go
   // location preserving done by the state prop of Navigate component
   // the login page will get the location in location.state
+
+  // add replace to navigate
   if (!user.email) {
-    return <Navigate to="/login" state={location.pathname} replace />;
+    return <Navigate to="/login" state={{ from: location }} />;
   }
 
   return children;

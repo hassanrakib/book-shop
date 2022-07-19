@@ -7,7 +7,6 @@ export default function Book({ book }) {
   const [isBuying, setIsBuying] = useState(false);
   const [isBought, setIsBought] = useState(false);
 
-  
   // set isBuying to false
   const setIsBuyingToFalse = function () {
     setTimeout(() => {
@@ -28,12 +27,11 @@ export default function Book({ book }) {
       // buying operations starts
       setIsBuying(true);
 
-      // get the previous cart of the user
-      const userCopy = { ...user };
-      const prevCart = [...userCopy.cart];
+      // get the cart of the user
+      const cart = user.cart;
 
       // check whether the book that user wants to buy already exists in cart
-      const bookAlreadyInCart = prevCart.find((bookInCart) => {
+      const bookAlreadyInCart = cart.find((bookInCart) => {
         return bookInCart.id == book.id;
       });
 
@@ -41,7 +39,7 @@ export default function Book({ book }) {
       if (bookAlreadyInCart) {
         bookAlreadyInCart.quantity += 1;
       } else {
-        prevCart.push({ id: book.id, quantity: 1 });
+        cart.push({ id: book.id, quantity: 1 });
       }
 
       // finally send the updated cart to the backend
@@ -51,14 +49,13 @@ export default function Book({ book }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          updatedCart: prevCart,
+          updatedCart: cart,
         }),
       })
         .then((res) => res.json())
         .then((result) => {
           if (result.acknowledged) {
-            userCopy.cart = prevCart;
-            setUser(userCopy);
+            setUser({ ...user, cart });
 
             // buying operations ends
             setIsBuyingToFalse();

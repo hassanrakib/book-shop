@@ -8,7 +8,9 @@ export default function AuthenticateUser({ formItems }) {
   // get the previous location sent by useNavigate from different components to redirect after signup and login
   const location = useLocation();
   const navigate = useNavigate();
-  const redirect_uri = location.state ? location.state : "/";
+  const redirect_uri = location.state?.from?.pathname
+    ? location.state.from.pathname
+    : "/";
   const { user, isLoading } = useAuth();
 
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function AuthenticateUser({ formItems }) {
             </p>
           </form>
           {/* sign in using google and facebook */}
-          <LoginWithAuthProviders redirect_uri={redirect_uri} />
+          <LoginWithAuthProviders />
         </div>
       )}
     </>
