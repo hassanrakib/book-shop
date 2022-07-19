@@ -3,15 +3,19 @@ import { AuthContext } from "./AuthProvider";
 export const CartContext = React.createContext();
 
 export default class CartProvider extends React.Component {
-  state = { displayCart: [], total: 0, isLoading: false };
+  state = { displayCart: [], total: 0, settingDisplayCart: false };
 
   // changeDisplayCart gets the cart from context that contains book objects with less properties and update displayCart state with book objects with more properties
+  setDisplayCart = () => {
+
+  };
+
   changeDisplayCart = (currentCart) => {
     // if user logged out currentCart will be undefined
     if (currentCart) {
-      this.setState({ isLoading: true });
+      this.setState({ settingDisplayCart: true });
       Promise.all(
-        currentCart?.map((book) =>
+        currentCart.map((book) =>
           fetch(`http://localhost:5000/books/${book.id}`)
             .then((res) => res.json())
             .then((displayCartBook) => ({
@@ -25,7 +29,7 @@ export default class CartProvider extends React.Component {
           const totalPrice = this.totalPriceOrQuantity(displayCart);
           this.setState({ total: totalPrice });
         })
-        .finally(() => this.setState({ isLoading: false }));
+        .finally(() => this.setState({ settingDisplayCart: false }));
     } else {
       // set displayCart and total for a logged out user
       this.setState({ displayCart: [], total: 0 });
@@ -55,7 +59,7 @@ export default class CartProvider extends React.Component {
   };
 
   // componentDidUpdate will be called after any change happen in context
-  componentDidUpdate(prevPorps, prevState) {
+  componentDidUpdate() {
     // from context
     const totalProductInCart = this.totalPriceOrQuantity(
       this.context.user.cart,
@@ -66,9 +70,9 @@ export default class CartProvider extends React.Component {
       this.state.displayCart,
       false
     );
-    // isLoading is letting the fetch to be done and update displayCart
+    // settingDisplayCart is letting the fetch to be done and update displayCart
     if (
-      !this.state.isLoading &&
+      !this.state.settingDisplayCart &&
       totalProductInCart !== totalProductInDisplayCart
     ) {
       this.changeDisplayCart(this.context.user.cart);

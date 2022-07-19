@@ -65,8 +65,29 @@ export default function Book({ book }) {
           }
         });
     } else {
-      console.log("wait...");
-      // will handle with localStorage
+      // use of local storage for anonymous user
+
+      // try to get the cart from local storage
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      // if no cart, initialize the cart with an empty array
+      if (!cart) cart = [];
+
+      // check whether the book that user wants to buy already exists in cart
+      const bookAlreadyInCart = cart.find((bookInCart) => {
+        return bookInCart.id == book.id;
+      });
+
+      // if the book exists, then just update the book quantity. else push a new book to the cart
+      // finally update the cart in local storage
+      if (bookAlreadyInCart) {
+        bookAlreadyInCart.quantity += 1;
+        // set the cart item
+        localStorage.setItem("cart", JSON.stringify(cart));
+      } else {
+        cart.push({ id: book.id, quantity: 1 });
+        // set the cart item
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
     }
   };
   return (
