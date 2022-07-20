@@ -23,15 +23,15 @@ const useFirebase = () => {
 
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
-  // as we are managing cart from user object
-  const [anonymousUserCart, setAnonymousUserCart] = useState(
-    JSON.parse(localStorage.getItem("cart"))
-  );
   const [isLoading, setIsLoading] = useState(true);
 
   /* 
       :: functions to work on managing users in db ::
   */
+
+  // user was anonymous but added product in local storage cart
+  // so we have to save it to user.cart when the user is no longer anonymous
+  const cart = JSON.parse(localStorage.getItem("cart"));
 
   // save user to db
   const saveUserToDB = (user) => {
@@ -40,7 +40,7 @@ const useFirebase = () => {
       displayName: user.displayName,
       email: user.email,
       photoURL: user.photoURL,
-      cart: [],
+      cart,
     };
 
     fetch(`http://localhost:5000/users/${newUser.uid}`)
@@ -74,7 +74,8 @@ const useFirebase = () => {
       .then((res) => res.json())
       .then((userFromDB) => {
         if (userFromDB) {
-          setUser(userFromDB);
+          // set the updated cart from local storage after logging in
+          setUser({...userFromDB, cart});
           setIsLoading(false);
         }
       });
@@ -138,8 +139,6 @@ const useFirebase = () => {
     setIsLoading,
     setError,
     setUser,
-    setAnonymousUserCart,
-    anonymousUserCart,
     isLoading,
     user,
     error,

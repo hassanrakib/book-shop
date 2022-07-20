@@ -1,9 +1,12 @@
+import { useContext } from "react";
 import { useState } from "react";
+import { CartContext } from "../../../contexts/CartProvider";
 import useAuth from "../../../hooks/useAuth";
 import Loading from "../../Shared/Loading/Loading";
 
 export default function Book({ book }) {
-  const { user, setUser, anonymousUserCart, setAnonymousUserCart } = useAuth();
+  const { user, setUser } = useAuth();
+  const { localStorageCart, setLocalStorageCart } = useContext(CartContext);
   const [isBuying, setIsBuying] = useState(false);
   const [isBought, setIsBought] = useState(false);
 
@@ -23,26 +26,39 @@ export default function Book({ book }) {
   };
 
   const handleBuyNow = () => {
+    // buying operations starts
+    setIsBuying(true);
+
+    let cart;
+
+    // if cart found in local storage, copy it to cart variable
+    if (localStorageCart) cart = [...localStorageCart];
+
+    // if no cart in storage, initialize the cart with an empty array
+    if (!localStorageCart) cart = [];
+
+    // check whether the book that user wants to buy already exists in cart
+    const bookAlreadyInCart = cart.find((bookInCart) => {
+      return bookInCart.id == book.id;
+    });
+
+    // if the book exists, then just update the book quantity. else push a new book to the cart
+    // finally update the cart in local storage
+    if (bookAlreadyInCart) {
+      bookAlreadyInCart.quantity += 1;
+    } else {
+      cart.push({ id: book.id, quantity: 1 });
+    }
+
+    // set the state localStorageCart with new cart
+    setLocalStorageCart(cart);
+
+    // update cart in localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // if user is logged in, do some extra operations
     if (user.email) {
-      // buying operations starts
-      setIsBuying(true);
-
-      // get the cart of the user
-      const cart = [...user.cart];
-
-      // check whether the book that user wants to buy already exists in cart
-      const bookAlreadyInCart = cart.find((bookInCart) => {
-        return bookInCart.id == book.id;
-      });
-
-      // if the book exists, then just update the book quantity. else push a new book to the cart
-      if (bookAlreadyInCart) {
-        bookAlreadyInCart.quantity += 1;
-      } else {
-        cart.push({ id: book.id, quantity: 1 });
-      }
-
-      // finally send the updated cart to the backend
+      // send the updated cart to the backend
       fetch(`http://localhost:5000/users/${user.uid}/cart`, {
         method: "PUT",
         headers: {
@@ -56,46 +72,14 @@ export default function Book({ book }) {
         .then((result) => {
           if (result.acknowledged) {
             setUser({ ...user, cart });
-
-            // buying operations ends
-            setIsBuyingToFalse();
-
-            // showBought holds isBought to true for two seconds
-            showBought();
           }
         });
-    } else {
-      // use of local storage for anonymous user
-
-      let cart;
-
-      // try to get the cart from local storage
-      let cartInLocalStorage = anonymousUserCart;
-
-      // if cart found in local storage, copy it to cart variable
-      if (cartInLocalStorage) cart = [...cartInLocalStorage];
-
-      // if no cart in storage, initialize the cart with an empty array
-      if (!cartInLocalStorage) cart = [];
-
-      // check whether the book that user wants to buy already exists in cart
-      const bookAlreadyInCart = cart.find((bookInCart) => {
-        return bookInCart.id == book.id;
-      });
-
-      // if the book exists, then just update the book quantity. else push a new book to the cart
-      // finally update the cart in local storage
-      if (bookAlreadyInCart) {
-        bookAlreadyInCart.quantity += 1;
-      } else {
-        cart.push({ id: book.id, quantity: 1 });
-      }
-
-      // update anonymousUserCart
-      setAnonymousUserCart(cart);
-      // update cart in localStorage
-      localStorage.setItem("cart", JSON.stringify(cart));
     }
+    // buying operations ends
+    setIsBuyingToFalse();
+
+    // showBought holds isBought to true for two seconds
+    showBought();
   };
   return (
     <div className="p-3 shadow-sm rounded-xl">

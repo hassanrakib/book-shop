@@ -3,7 +3,16 @@ import { AuthContext } from "./AuthProvider";
 export const CartContext = React.createContext();
 
 export default class CartProvider extends React.Component {
-  state = { displayCart: [], total: 0, settingDisplayCart: false };
+  state = {
+    localStorageCart: JSON.parse(localStorage.getItem("cart")),
+    displayCart: [],
+    total: 0,
+    settingDisplayCart: false,
+  };
+
+  // setter function for localStorageCart state
+  setLocalStorageCart = (newCart) =>
+    this.setState({ localStorageCart: newCart });
 
   // changeDisplayCart gets the cart from context that contains book objects with less properties and update displayCart state with book objects with more properties
 
@@ -28,7 +37,7 @@ export default class CartProvider extends React.Component {
         })
         .finally(() => this.setState({ settingDisplayCart: false }));
     } else {
-      // set displayCart and total for a logged out user
+      // set displayCart and total for null value of currentCart
       this.setState({ displayCart: [], total: 0 });
     }
   };
@@ -54,10 +63,11 @@ export default class CartProvider extends React.Component {
     }, initialTotal);
     return total;
   };
-  
+
   // componentDidUpdate will be called after any change happen in context
   componentDidUpdate() {
-    const {user, anonymousUserCart, isLoading} = this.context;
+    const { user, isLoading } = this.context;
+    const { localStorageCart } = this.state;
 
     // will use this cart to get displayCart
     let cart;
@@ -66,8 +76,8 @@ export default class CartProvider extends React.Component {
     if (!isLoading && user.email) {
       cart = user.cart;
     } else {
-      // if user doesn't exist
-      cart = anonymousUserCart;
+      // if user not logged in
+      cart = localStorageCart;
     }
 
     // from context
@@ -88,9 +98,10 @@ export default class CartProvider extends React.Component {
 
   render() {
     const { children } = this.props;
-    const { displayCart, total } = this.state;
     return (
-      <CartContext.Provider value={{ displayCart, total }}>
+      <CartContext.Provider
+        value={{ ...this.state, setLocalStorageCart: this.setLocalStorageCart }}
+      >
         {children}
       </CartContext.Provider>
     );
