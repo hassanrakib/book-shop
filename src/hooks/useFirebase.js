@@ -23,6 +23,10 @@ const useFirebase = () => {
 
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
+  // as we are managing cart from user object
+  const [anonymousUserCart, setAnonymousUserCart] = useState(
+    JSON.parse(localStorage.getItem("cart"))
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   /* 
@@ -134,6 +138,8 @@ const useFirebase = () => {
     setIsLoading,
     setError,
     setUser,
+    setAnonymousUserCart,
+    anonymousUserCart,
     isLoading,
     user,
     error,

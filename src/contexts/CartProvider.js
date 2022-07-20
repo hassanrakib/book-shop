@@ -6,12 +6,9 @@ export default class CartProvider extends React.Component {
   state = { displayCart: [], total: 0, settingDisplayCart: false };
 
   // changeDisplayCart gets the cart from context that contains book objects with less properties and update displayCart state with book objects with more properties
-  setDisplayCart = () => {
-
-  };
 
   changeDisplayCart = (currentCart) => {
-    // if user logged out currentCart will be undefined
+    // currentCart can be null, if no cart is set in localStorage
     if (currentCart) {
       this.setState({ settingDisplayCart: true });
       Promise.all(
@@ -42,7 +39,7 @@ export default class CartProvider extends React.Component {
 
     // just logged out user cart will be undefined
     // so instead of undefined we are returning 0 to match the displayCart quantity after setState
-    if (cart === undefined || cart.length === 0) {
+    if (cart === null || cart.length === 0) {
       return initialTotal;
     }
 
@@ -57,14 +54,24 @@ export default class CartProvider extends React.Component {
     }, initialTotal);
     return total;
   };
-
+  
   // componentDidUpdate will be called after any change happen in context
   componentDidUpdate() {
+    const {user, anonymousUserCart, isLoading} = this.context;
+
+    // will use this cart to get displayCart
+    let cart;
+
+    // if user exists use the user object
+    if (!isLoading && user.email) {
+      cart = user.cart;
+    } else {
+      // if user doesn't exist
+      cart = anonymousUserCart;
+    }
+
     // from context
-    const totalProductInCart = this.totalPriceOrQuantity(
-      this.context.user.cart,
-      false
-    );
+    const totalProductInCart = this.totalPriceOrQuantity(cart, false);
     // from displayCart
     const totalProductInDisplayCart = this.totalPriceOrQuantity(
       this.state.displayCart,
@@ -75,7 +82,7 @@ export default class CartProvider extends React.Component {
       !this.state.settingDisplayCart &&
       totalProductInCart !== totalProductInDisplayCart
     ) {
-      this.changeDisplayCart(this.context.user.cart);
+      this.changeDisplayCart(cart);
     }
   }
 

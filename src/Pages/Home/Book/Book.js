@@ -3,7 +3,7 @@ import useAuth from "../../../hooks/useAuth";
 import Loading from "../../Shared/Loading/Loading";
 
 export default function Book({ book }) {
-  const { user, setUser } = useAuth();
+  const { user, setUser, anonymousUserCart, setAnonymousUserCart } = useAuth();
   const [isBuying, setIsBuying] = useState(false);
   const [isBought, setIsBought] = useState(false);
 
@@ -28,7 +28,7 @@ export default function Book({ book }) {
       setIsBuying(true);
 
       // get the cart of the user
-      const cart = user.cart;
+      const cart = [...user.cart];
 
       // check whether the book that user wants to buy already exists in cart
       const bookAlreadyInCart = cart.find((bookInCart) => {
@@ -67,10 +67,16 @@ export default function Book({ book }) {
     } else {
       // use of local storage for anonymous user
 
+      let cart;
+
       // try to get the cart from local storage
-      let cart = JSON.parse(localStorage.getItem("cart"));
-      // if no cart, initialize the cart with an empty array
-      if (!cart) cart = [];
+      let cartInLocalStorage = anonymousUserCart;
+
+      // if cart found in local storage, copy it to cart variable
+      if (cartInLocalStorage) cart = [...cartInLocalStorage];
+
+      // if no cart in storage, initialize the cart with an empty array
+      if (!cartInLocalStorage) cart = [];
 
       // check whether the book that user wants to buy already exists in cart
       const bookAlreadyInCart = cart.find((bookInCart) => {
@@ -81,13 +87,14 @@ export default function Book({ book }) {
       // finally update the cart in local storage
       if (bookAlreadyInCart) {
         bookAlreadyInCart.quantity += 1;
-        // set the cart item
-        localStorage.setItem("cart", JSON.stringify(cart));
       } else {
         cart.push({ id: book.id, quantity: 1 });
-        // set the cart item
-        localStorage.setItem("cart", JSON.stringify(cart));
       }
+
+      // update anonymousUserCart
+      setAnonymousUserCart(cart);
+      // update cart in localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
   };
   return (
