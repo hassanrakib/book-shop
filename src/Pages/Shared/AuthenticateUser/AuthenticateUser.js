@@ -5,13 +5,14 @@ import Loading from "../Loading/Loading";
 import LoginWithAuthProviders from "../LoginWithAuthProviders/LoginWithAuthProviders";
 
 export default function AuthenticateUser({ formItems }) {
+  const { user, isLoading } = useAuth();
+
   // get the previous location sent by useNavigate from different components to redirect after signup and login
   const location = useLocation();
   const navigate = useNavigate();
   const redirect_uri = location.state?.from?.pathname
     ? location.state.from.pathname
     : "/";
-  const { user, isLoading } = useAuth();
 
   useEffect(() => {
     if (user.email) {

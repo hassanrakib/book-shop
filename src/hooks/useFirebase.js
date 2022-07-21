@@ -75,7 +75,7 @@ const useFirebase = () => {
       .then((userFromDB) => {
         if (userFromDB) {
           // set the updated cart from local storage after logging in
-          setUser({...userFromDB, cart});
+          setUser({ ...userFromDB, cart });
           setIsLoading(false);
         }
       });
