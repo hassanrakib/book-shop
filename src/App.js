@@ -9,6 +9,8 @@ import CreateAccount from "./Pages/CreateAccount/CreateAccount/CreateAccount";
 import CartProvider from "./contexts/CartProvider";
 import RequireAuth from "./Pages/Shared/RequireAuth/RequireAuth";
 import Order from "./Pages/Order/Order/Order";
+import DashboardLayout from "./Pages/PageLayouts/DashboardLayout/DashboardLayout";
+import Dashboard from "./Pages/Dashboard/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -28,6 +30,9 @@ function App() {
                 </RequireAuth>
               }
             />
+          </Route>
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
       </CartProvider>

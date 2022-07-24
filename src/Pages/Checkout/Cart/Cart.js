@@ -6,7 +6,7 @@ export default class Cart extends React.Component {
     return (
       <div className="mt-8 mb-3 space-y-4">
         <h1 className="text-3xl">Checkout</h1>
-        <div className="p-4 shadow-md">
+        <div>
           <table className="w-full">
             <thead className="border-b">
               <tr>
@@ -20,7 +20,7 @@ export default class Cart extends React.Component {
                 ))}
               </tr>
             </thead>
-            <tbody className="font-medium">
+            <tbody>
               {displayCart.map((displayCartBook) => (
                 <tr key={Math.random().toString()}>
                   <td className="px-1 py-3">{displayCartBook.title}</td>
@@ -33,7 +33,7 @@ export default class Cart extends React.Component {
                 </tr>
               ))}
             </tbody>
-            <tfoot className="border-t font-bold bg-blue-100">
+            <tfoot className="border-t font-bold">
               <tr>
                 <td className="px-1 py-4" colSpan={2}>
                   Total
